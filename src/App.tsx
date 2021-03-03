@@ -40,15 +40,22 @@ function map_async<T, U>(input: T[], transform: (input: T) => Promise<U>) {
 }
 
 // eslint-disable-next-line no-control-regex
-const rxWierdCharacter = new RegExp("", "g");
+const rxWierdCharacter = new RegExp("|\\n", "g");
 
 async function fetchFlavorText(id: string): Promise<string[]> {
   const data = await fetchJSON(
     `https://pokeapi.co/api/v2/pokemon-species/${id}/`
   );
-  return data.flavor_text_entries
-    .filter((entry: any, index: number) => entry.language.name === "en")
+
+  const flavor: string[] = data.flavor_text_entries
+    .filter((entry: any) => entry.language.name === "en")
     .map((entry: any) => entry.flavor_text.replace(rxWierdCharacter, " "));
+
+  const lowercase = flavor.map(text => text.toLowerCase());
+
+  return flavor.filter((_, index) => {
+    return lowercase.indexOf(lowercase[index], index + 1) < 0;
+  });
 }
 
 async function fetchPokemon({
