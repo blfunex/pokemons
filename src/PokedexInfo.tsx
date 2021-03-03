@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import PokemonDetails from "./components/details";
+import PokemonImage from "./components/image";
 
 export type Pokemon = {
   id: string;
@@ -12,113 +13,69 @@ interface PokedexInfoProps {
   pokemon: Pokemon;
 }
 
-interface PokedexDetailsProps extends PokedexInfoProps {
-  open: boolean;
-  onClose(): void;
-}
-
 const colors: Record<string, string> = {
-  fire: "#FDDFDF",
-  grass: "#DEFDE0",
-  electric: "#FCF7DE",
-  water: "#DEF3FD",
-  ground: "#f4e7da",
+  fire: "#FFA341",
+  grass: "#98d7a5",
+  electric: "#F2E04C",
+  water: "#AABEFF",
+  ground: "#D79624",
   rock: "#d5d5d4",
-  fairy: "#fceaff",
-  poison: "#98d7a5",
+  fairy: "#FFC8CF",
+  poison: "#BC8FED",
   bug: "#f8d5a3",
   dragon: "#97b3e6",
   psychic: "#eaeda1",
-  flying: "#F5F5F5",
+  flying: "#FFECC0",
   fighting: "#E6E0D4",
-  normal: "#F5F5F5",
+  normal: "#D5D5D5",
 };
 
-function PokedexDetails({
-  open,
-  onClose,
-  pokemon: { flavor },
-}: PokedexDetailsProps) {
-  const dialogElementRef = useRef<HTMLDialogElement>(null!);
-
-  useEffect(() => {
-    const dialogElement = dialogElementRef.current;
-    if (dialogElement) {
-      if (open) {
-        if (dialogElement.hasAttribute("open"))
-          dialogElement.removeAttribute("open");
-        dialogElement.showModal();
-      } else {
-        dialogElement.close();
-      }
-      dialogElement.addEventListener("close", onClose);
-      return () => dialogElement.removeEventListener("close", onClose);
-    }
-  }, [dialogElementRef, open, onClose]);
-
-  return (
-    <dialog ref={dialogElementRef}>
-      {flavor.map((text, index) => (
-        <p key={index}>{text}</p>
-      ))}
-    </dialog>
-  );
-}
+const supportedTypes = Object.keys(colors);
 
 export default function PokedexInfo({ pokemon }: PokedexInfoProps) {
-  const [showBack, setShowBack] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const { id, name, types, flavor, sprites } = pokemon;
 
-  const {
-    id,
-    name,
-    sprites: [front, back],
-    types,
-    flavor,
-  } = pokemon;
+  const main_type = supportedTypes.find(type => types.indexOf(type) >= 0);
 
-  const captalizedName = name[0].toUpperCase() + name.slice(1);
+  const hasFlavorText = flavor.length > 0;
 
   return (
     <>
       <article
         className="pokedex-info"
         style={{
-          background: colors[types[0]],
+          background: main_type ? colors[main_type] : undefined,
         }}
       >
-        <figure onClick={() => setShowBack(!showBack)}>
-          <img
-            className={showBack ? "is-back" : ""}
-            src={showBack ? back : front}
-            alt={`A depiction of ${name}`}
-          />
-        </figure>
-        <header>
-          <h3>{captalizedName}</h3>
-          <h5>#{id}</h5>
-        </header>
+        <PokemonImage name={name} front={sprites[0]} back={sprites[1]} />
         <section>
-          {types.map((type, index) => (
-            <span key={index} className="nes-badge">
-              <span className="is-dark">{type}</span>
-            </span>
-          ))}
-          <p>{flavor[0]}</p>
-
-          <button
-            type="button"
-            className="nes-button"
-            onClick={() => setShowDetails(true)}
-          >
-            More details
-          </button>
+          <header>
+            <h3>{name}</h3>
+            <h5>#{id}</h5>
+          </header>
+          <section>
+            {types.map((type, index) => (
+              <span key={index} className="nes-badge">
+                <span
+                  className="is-dark"
+                  style={{
+                    color: colors[type],
+                  }}
+                >
+                  {type}
+                </span>
+              </span>
+            ))}
+            {hasFlavorText ? (
+              <>
+                <p>{flavor[0]}</p>
+                <PokemonDetails pokemon={pokemon} />
+              </>
+            ) : (
+              <p>No details were found about this pokemon</p>
+            )}
+          </section>
         </section>
-        <PokedexDetails
-          pokemon={pokemon}
-          open={showDetails}
-          onClose={() => setShowDetails(false)}
-        />
       </article>
     </>
   );
