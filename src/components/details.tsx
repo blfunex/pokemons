@@ -3,6 +3,7 @@ import PokemonImage from "./image";
 import useModalDialog from "../hooks/useModalDialog";
 
 import type { Pokemon } from "../PokedexInfo";
+import useSpeechSynthesis from "../hooks/useSpeechSynthesis";
 
 export default function PokemonDetails({
   pokemon: { flavor, name, sprites },
@@ -11,10 +12,19 @@ export default function PokemonDetails({
 }) {
   const [ref, close, open] = useModalDialog();
 
+  const [speak] = useSpeechSynthesis();
+
   return (
     <>
       <div className="pokedex-details">
-        <button type="button" className="nes-button" onClick={open}>
+        <button
+          type="button"
+          className="nes-button"
+          onClick={() => {
+            open();
+            speak(flavor.join("\n"));
+          }}
+        >
           More details
         </button>
         <dialog className="nes-dialog pokedex-dialog" ref={ref}>
