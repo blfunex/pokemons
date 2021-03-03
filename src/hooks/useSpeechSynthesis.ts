@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 export default function useSpeechSynthesis(
   pitch: number = 1,
-  rate: number = 1
+  rate: number = 1.5
 ) {
   const synth = window.speechSynthesis;
 
@@ -32,19 +32,28 @@ export default function useSpeechSynthesis(
 
     setNames(voices.map(voice => voice.name));
 
+    console.log(voices);
+
     if (voices.length > 0) setSelectedVoice(0);
   }, [synth]);
 
+  const cancel = useCallback(
+    function cancel() {
+      synth.cancel();
+    },
+    [synth]
+  );
+
   const speak = useCallback(
     function speak(text: string) {
-      if (!synth || selected < 0) return;
+      if (!synth) return;
 
       synth.cancel();
 
-      const voice = voices[selected];
       const utterance = new SpeechSynthesisUtterance(text);
 
-      utterance.voice = voice;
+      if (selected < 0) utterance.voice = voices[selected];
+
       utterance.pitch = pitch;
       utterance.rate = rate;
 
@@ -60,5 +69,5 @@ export default function useSpeechSynthesis(
     [voices]
   );
 
-  return [speak, select, names] as const;
+  return [speak, cancel, select, names] as const;
 }

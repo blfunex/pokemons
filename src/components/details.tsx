@@ -4,15 +4,33 @@ import useModalDialog from "../hooks/useModalDialog";
 
 import type { Pokemon } from "../PokedexInfo";
 import useSpeechSynthesis from "../hooks/useSpeechSynthesis";
+import { useEffect } from "react";
+
+function subjunction(items: string[], suffix = "", prefix = "") {
+  switch (items.length) {
+    case 0:
+      return "";
+    case 1:
+      return `${prefix} ${items[0]} and ${items[1]} ${suffix}`;
+    default:
+      return `${prefix} ${items.slice(0, -1).join(", ")} and ${
+        items[items.length - 1]
+      } ${suffix}`;
+  }
+}
 
 export default function PokemonDetails({
-  pokemon: { flavor, name, sprites },
+  pokemon: { flavor, name, sprites, types },
 }: {
   pokemon: Pokemon;
 }) {
-  const [ref, close, open] = useModalDialog();
+  const [ref, close, open, isOpened] = useModalDialog();
 
-  const [speak] = useSpeechSynthesis();
+  const [speak, cancel] = useSpeechSynthesis();
+
+  useEffect(() => {
+    if (!isOpened) cancel();
+  }, [cancel, isOpened]);
 
   return (
     <>
@@ -22,7 +40,13 @@ export default function PokemonDetails({
           className="nes-button"
           onClick={() => {
             open();
-            speak(flavor.join("\n"));
+            speak(
+              `This is ${name}, ${subjunction(
+                types,
+                "pokemon",
+                "it is a"
+              )}.\n${flavor.join("\n")}`
+            );
           }}
         >
           More details

@@ -38,6 +38,7 @@ footer {
 }
 
 dialog::backdrop {
+  background-color: rgba(0, 0, 0, .3);
   backdrop-filter: brightness(60%) saturate(80%) blur(2px);
 }
 
