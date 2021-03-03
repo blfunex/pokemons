@@ -1,46 +1,70 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function useModalDialog() {
   const [isOpen, setIsOpen] = useState(false);
+  const [overflow, setOriginalOverflow] = useState("unset");
 
   const ref = useRef<HTMLDialogElement>(null!);
 
-  function open() {
+  const open = useCallback(function open() {
     setIsOpen(true);
-  }
+  }, []);
 
-  function close() {
+  const close = useCallback(function close() {
     setIsOpen(false);
-  }
+  }, []);
 
-  useEffect(() => {
+  const onOpenDialog = useCallback(function onOpenDialog() {
     const dialog = ref.current;
     if (dialog) {
-      if (isOpen) {
-        dialog.removeAttribute("open");
-        dialog.showModal();
-      } else {
-        dialog.close();
+      dialog.removeAttribute("open");
+      document.body.style.overflow = "hidden";
+      dialog.showModal();
+      setOriginalOverflow(window.getComputedStyle(document.body).overflow);
+    }
+  }, []);
+
+  const onCloseDialog = useCallback(
+    function onCloseDialog() {
+      document.body.style.overflow = overflow;
+      ref.current?.close();
+    },
+    [overflow]
+  );
+
+  const onDialogBackdropClicked = useCallback(
+    function onDialogBackdropClicked(event: Event) {
+      if (event.target === ref.current) close();
+    },
+    [close]
+  );
+
+  const callback = useCallback(
+    function refDialogCallback(node: HTMLDialogElement) {
+      const current = ref.current;
+
+      ref.current = node;
+
+      if (current) {
+        current.removeEventListener("click", onDialogBackdropClicked);
+        current.removeEventListener("close", onCloseDialog);
       }
-    }
-  }, [ref, isOpen]);
+
+      if (node) {
+        node.addEventListener("click", onDialogBackdropClicked);
+        node.addEventListener("close", onCloseDialog);
+      }
+    },
+    [onDialogBackdropClicked, onCloseDialog]
+  );
 
   useEffect(() => {
-    const dialog = ref.current;
-    if (dialog) {
-      const listener = function listener(event: MouseEvent) {
-        if (event.target === dialog) close();
-      };
-
-      dialog.addEventListener("click", listener);
-      dialog.addEventListener("close", close);
-      return () => {
-        dialog.addEventListener("click", listener);
-        dialog.removeEventListener("close", close);
-      };
+    if (isOpen) {
+      onOpenDialog();
+    } else {
+      onCloseDialog();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ref]);
+  }, [isOpen, onCloseDialog, onOpenDialog]);
 
-  return [ref, close, open, isOpen] as const;
+  return [callback, close, open, isOpen] as const;
 }
