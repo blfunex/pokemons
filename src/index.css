@@ -22,8 +22,16 @@ p {
   font-size: 1rem;
 }
 
+body {
+  background-color: black;
+}
+
 footer {
-  position: fixed;
+  position: fixed !important;
+  background-color: #252525;
+  color: #EDEDED;
+  border: none;
+  transform: translateY(80%);
   bottom: 0;
   right: 0;
   left: 0;
@@ -133,4 +141,12 @@ dialog::backdrop {
   appearance: none;
   background: none;
   border: none;
+}
+
+.pokedex-details {
+  text-align: center;
+}
+
+.pokedex p {
+  text-align: left;
 }

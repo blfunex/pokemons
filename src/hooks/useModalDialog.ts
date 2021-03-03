@@ -2,35 +2,35 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function useModalDialog() {
   const [isOpen, setIsOpen] = useState(false);
-  const [overflow, setOriginalOverflow] = useState("unset");
+  const [overflow, setOriginalOverflow] = useState("");
 
   const ref = useRef<HTMLDialogElement>(null!);
 
   const open = useCallback(function open() {
+    setOriginalOverflow(window.getComputedStyle(document.body).overflow);
+    document.body.style.overflow = "hidden";
     setIsOpen(true);
   }, []);
 
-  const close = useCallback(function close() {
-    setIsOpen(false);
-  }, []);
+  const close = useCallback(
+    function close() {
+      document.body.style.overflow = overflow;
+      setIsOpen(false);
+    },
+    [overflow]
+  );
 
   const onOpenDialog = useCallback(function onOpenDialog() {
     const dialog = ref.current;
     if (dialog) {
       dialog.removeAttribute("open");
-      document.body.style.overflow = "hidden";
       dialog.showModal();
-      setOriginalOverflow(window.getComputedStyle(document.body).overflow);
     }
   }, []);
 
-  const onCloseDialog = useCallback(
-    function onCloseDialog() {
-      document.body.style.overflow = overflow;
-      ref.current?.close();
-    },
-    [overflow]
-  );
+  const onCloseDialog = useCallback(function onCloseDialog() {
+    ref.current?.close();
+  }, []);
 
   const onDialogBackdropClicked = useCallback(
     function onDialogBackdropClicked(event: Event) {
