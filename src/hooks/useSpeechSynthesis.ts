@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
+// Inspired by https://mdn.github.io/web-speech-api/speak-easy-synthesis/
+
 export default function useSpeechSynthesis(
   pitch: number = 1,
   rate: number = 1
