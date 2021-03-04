@@ -81,9 +81,15 @@ async function fetchPokemon({
 }): Promise<Pokemon | null> {
   try {
     const data = await fetchJSON(url);
+
+    name = name[0].toUpperCase() + name.slice(1);
+
+    if (name.endsWith("-f")) name = "Female " + name.slice(0, -2);
+    if (name.endsWith("-m")) name = "Male " + name.slice(0, -2);
+
     return {
       id: data.id,
-      name: name[0].toUpperCase() + name.slice(1),
+      name: name,
       sprites: [data.sprites.front_default, data.sprites.back_default],
       types: data.types.map((item: any) => item.type.name),
       flavor: await fetchFlavorText(data.id),

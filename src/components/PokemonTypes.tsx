@@ -15,7 +15,7 @@ export default function PokemonTypes({
               color: TypeColors[type],
             }}
           >
-            {type}
+            {type.toUpperCase()}
           </span>
         </span>
       ))}

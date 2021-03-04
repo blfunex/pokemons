@@ -1,3 +1,10 @@
+/*
+ * NES.css does a lot of CSS antipatterns but it the most complete
+ * pixelated css framework, my hands are tied.
+ * This files mostly contains fixes to quirks and problems I found
+ * with the framework.
+ */
+
 :root {
   font-size: 10px;
 }
@@ -7,23 +14,27 @@ body {
 }
 
 h1, h2 {
-  font-size: 2rem;
+  font-size: 1.75rem;
 }
 
 h3, h4 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
 }
 
 h5, h6 {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
 }
 
 h1, h3, h5 {
   font-weight: bolder;
 }
 
-p {
-  font-size: 1rem;
+p, .nes-badge {
+  font-size: 1.2rem "DotGothic16", sans-serif;
+}
+
+.pokedex-dialog .nes-badge {
+  display: block;
 }
 
 .header, .footer {
@@ -45,7 +56,7 @@ p {
   color: #EDEDED;
   border: none;
   transition: all 0.3s ease-in-out;
-  transform: translateY(60%);
+  transform: translateY(80%);
   bottom: 0;
   right: 0;
   left: 0;
@@ -107,6 +118,10 @@ dialog::backdrop {
   margin: 0;
 }
 
+.pokedex-details .nes-badge {
+  font-size: 1.6rem;
+}
+
 .pokedex-info {
   max-width: 640px;
   margin: 0.2rem;
@@ -122,6 +137,7 @@ dialog::backdrop {
   flex-shrink: 0;
   transform-style: preserve-3d;
   transform-origin: center;
+  margin: auto;
   perspective: 10cm;
   position: relative;
   height: 256px;
@@ -199,4 +215,8 @@ dialog::backdrop {
 .pokedex-info p,
 .pokedex-types {
   padding: 0.5rem;
+}
+
+.pokedex-details button {
+  font-size: 1rem;
 }

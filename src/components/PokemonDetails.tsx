@@ -24,7 +24,7 @@ function subjunction(items: string[], suffix = "", prefix = "") {
 export default function PokemonDetails({ pokemon }: { pokemon: Pokemon }) {
   const [speak, cancel] = useSpeechSynthesis();
 
-  const [ref, close, open] = useModalDialog(cancel);
+  const [ref, close, open, isDialogOpen] = useModalDialog(cancel);
 
   const { flavor, name, sprites, types } = pokemon;
 
@@ -38,7 +38,7 @@ export default function PokemonDetails({ pokemon }: { pokemon: Pokemon }) {
           <div className="pokedex-details">
             <button
               type="button"
-              className="nes-btn is-primary is-small"
+              className="nes-btn is-primary"
               onClick={() => {
                 open();
                 speak(
@@ -53,29 +53,31 @@ export default function PokemonDetails({ pokemon }: { pokemon: Pokemon }) {
               More details
             </button>
             <dialog className="nes-dialog pokedex-dialog" ref={ref}>
-              <header>
-                <h3>{name}'s details</h3>
-                <button type="button" onClick={close}>
-                  <i className="nes-icon is-small close"></i>
-                </button>
-              </header>
-              <main>
-                <section>
-                  <div>
-                    <PokemonTypes pokemon={pokemon} />
-                  </div>
-                  <PokemonImage
-                    name={name}
-                    front={sprites[0]}
-                    back={sprites[1]}
-                  />
-                </section>
-                <section>
-                  {flavor.map((text, index) => (
-                    <p key={index}>{text}</p>
-                  ))}
-                </section>
-              </main>
+              {isDialogOpen && (
+                <>
+                  <header>
+                    <h3>{name}'s details</h3>
+                    <button type="button" onClick={close}>
+                      <i className="nes-icon is-small close"></i>
+                    </button>
+                  </header>
+                  <main>
+                    <section>
+                      <PokemonImage
+                        name={name}
+                        front={sprites[0]}
+                        back={sprites[1]}
+                      />
+                      <PokemonTypes pokemon={pokemon} />
+                    </section>
+                    <section>
+                      {flavor.map((text, index) => (
+                        <p key={index}>{text}</p>
+                      ))}
+                    </section>
+                  </main>
+                </>
+              )}
             </dialog>
           </div>
         </>
