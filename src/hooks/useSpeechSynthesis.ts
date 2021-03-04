@@ -47,17 +47,17 @@ export function useSpeechSynthesisVoiceOptions() {
 
 export default function useSpeechSynthesis(
   enabled = true,
-  pitch: number = 2,
-  rate: number = 1
+  pitch: number = 1,
+  rate: number = 1.25
 ) {
-  useEffect(() => {
-    if (!enabled) synth?.cancel();
-  }, [enabled]);
-
   const cancel = useCallback(function cancelTextUtterance() {
     if (!synth) return;
     synth?.cancel();
   }, []);
+
+  useEffect(() => {
+    if (!enabled) synth?.cancel();
+  }, [enabled]);
 
   const speak = useCallback(
     function speakTextUtterance(text: string) {
