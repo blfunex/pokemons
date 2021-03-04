@@ -18,7 +18,9 @@ const voices = synth
   : [];
 
 function attemptToGetPreferredVoice() {
-  const index = voices.findIndex(voice => voice.name.indexOf("Mark") >= 0);
+  const index = voices.findIndex(
+    voice => voice.name.indexOf("David") >= 0
+  );
   return index < 0 ? 0 : index;
 }
 
@@ -45,7 +47,7 @@ export function useSpeechSynthesisVoiceOptions() {
 
 export default function useSpeechSynthesis(
   enabled = true,
-  pitch: number = 1,
+  pitch: number = 2,
   rate: number = 1
 ) {
   useEffect(() => {

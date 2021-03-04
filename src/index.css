@@ -26,15 +26,15 @@ p {
   font-size: 1rem;
 }
 
-header, footer {
+.header, .footer {
   text-align: center;
 }
 
-body > header {
+.header {
   color: white;
 }
 
-footer {
+.footer {
   position: fixed !important;
   background-color: #252525;
   color: #EDEDED;
@@ -50,11 +50,11 @@ footer {
   padding-bottom: 3rem;
 }
 
-footer:hover, footer:focus {
+.footer:hover, .footer:focus {
   transform: translateY(0);
 }
 
-footer .arrow-up-icon {
+.footer .arrow-up-icon {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,7 +62,7 @@ footer .arrow-up-icon {
   color: #888;
 }
 
-footer .arrow-up-icon::before {
+.footer .arrow-up-icon::before {
   transition: all 0.3s ease-in-out;
   transform: rotate(-45deg);
   display: inline-block;
@@ -75,14 +75,15 @@ footer .arrow-up-icon::before {
   border-width: 0.4rem 0.4rem 0 0;
 }
 
-footer:hover .arrow-up-icon {
+.footer:hover .arrow-up-icon {
   color: white;
 }
 
-footer:hover .arrow-up-icon::before,
-footer:focus .arrow-up-icon::before {
+.footer:hover .arrow-up-icon::before,
+.footer:focus .arrow-up-icon::before {
   transform: translateY(-2rem) rotate(135deg);
 }
+
 
 dialog::backdrop {
   background-color: rgba(0, 0, 0, .3);
@@ -98,7 +99,7 @@ dialog::backdrop {
 
 .pokedex .nes-badge {
   font-size: 0.8rem;
-  margin: 0 0.8rem;
+  margin: 0;
 }
 
 .pokedex-info {
@@ -114,13 +115,12 @@ dialog::backdrop {
 
 .pokedex-image {
   flex-shrink: 0;
-  margin: 64px auto;
   transform-style: preserve-3d;
   transform-origin: center;
   perspective: 10cm;
   position: relative;
-  width: 128px;
-  height: 128px;
+  height: 256px;
+  width: 256px;
   transition: transform 0.3s ease-in-out;
   cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAzElEQVRYR+2X0Q6AIAhF5f8/2jYXZkwEjNSVvVUjDpcrGgT7FUkI2D9xRfQETwNIiWO85wfINfQUEyxBG2ArsLwC0jioGt5zFcwF4OYDPi/mBYKm4t0U8ATgRm3ThFoAqkhNgWkA0jJLvaOVSs7j3qMnSgXWBMiWPXe94QqMBMBc1VZIvaTu5u5pQewq0EqNZvIEMCmxAawK0DNkay9QmfFNAJUXfgGgUkLaE7j/h8fnASkxHTz0DGIBMCnBeeM7AArpUd3mz2x3C7wADglA8BcWMZhZAAAAAElFTkSuQmCC) 14 0,pointer
 }
@@ -133,8 +133,8 @@ dialog::backdrop {
   position: absolute;
   width: 256px;
   height: 256px;
-  right: -64px;
-  top: -64px;
+  right: 0;
+  top: 0;
 }
 
 .pokedex-image.show-back {
@@ -161,13 +161,6 @@ dialog::backdrop {
   .pokedex-info, .pokedex-dialog main {
     flex-direction: row;
   }
-  .pokedex-image {
-    margin: 0 64px 64px 0;
-  }
-
-  .pokedex-dialog main .pokedex-image {
-    margin: 64px;
-  }
 
   .pokedex-image:empty {
     display: unset;
@@ -185,16 +178,20 @@ dialog::backdrop {
   padding: 2rem;
 }
 
-.pokedex dialog button {
+.pokedex-dialog button {
   appearance: none;
   background: none;
   border: none;
 }
 
-.pokedex-details {
-  text-align: center;
+.pokedex-info header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.pokedex p {
-  text-align: left;
+.pokedex-info header,
+.pokedex-info p,
+.pokedex-types {
+  padding: 0.5rem;
 }

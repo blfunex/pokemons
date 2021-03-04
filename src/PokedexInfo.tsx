@@ -1,5 +1,6 @@
 import PokemonDetails from "./components/PokemonDetails";
 import PokemonImage from "./components/PokemonImage";
+import PokemonTypes from "./components/PokemonTypes";
 
 export type Pokemon = {
   id: string;
@@ -13,7 +14,7 @@ interface PokedexInfoProps {
   pokemon: Pokemon;
 }
 
-const colors: Record<string, string> = {
+export const TypeColors: Record<string, string> = {
   fire: "#FFA341",
   grass: "#98d7a5",
   electric: "#F2E04C",
@@ -30,21 +31,19 @@ const colors: Record<string, string> = {
   normal: "#D5D5D5",
 };
 
-const supportedTypes = Object.keys(colors);
+const supportedTypes = Object.keys(TypeColors);
 
 export default function PokedexInfo({ pokemon }: PokedexInfoProps) {
-  const { id, name, types, flavor, sprites } = pokemon;
+  const { id, name, types, sprites } = pokemon;
 
-  const main_type = supportedTypes.find(type => types.indexOf(type) >= 0);
-
-  const hasFlavorText = flavor.length > 0;
+  const mainType = supportedTypes.find(type => types.indexOf(type) >= 0);
 
   return (
     <>
       <article
         className="pokedex-info"
         style={{
-          background: main_type ? colors[main_type] : undefined,
+          background: mainType ? TypeColors[mainType] : undefined,
         }}
       >
         <PokemonImage name={name} front={sprites[0]} back={sprites[1]} />
@@ -54,26 +53,8 @@ export default function PokedexInfo({ pokemon }: PokedexInfoProps) {
             <h5>#{id}</h5>
           </header>
           <section>
-            {types.map((type, index) => (
-              <span key={index} className="nes-badge">
-                <span
-                  className="is-dark"
-                  style={{
-                    color: colors[type],
-                  }}
-                >
-                  {type}
-                </span>
-              </span>
-            ))}
-            {hasFlavorText ? (
-              <>
-                <p>{flavor[0]}</p>
-                <PokemonDetails pokemon={pokemon} />
-              </>
-            ) : (
-              <p>No details were found about this pokemon</p>
-            )}
+            <PokemonTypes pokemon={pokemon} />
+            <PokemonDetails pokemon={pokemon} />
           </section>
         </section>
       </article>
