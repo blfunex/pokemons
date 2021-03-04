@@ -31,7 +31,12 @@ p {
 }
 
 .header {
+  position: sticky;
+  z-index: 1;
+  top: 0;
   color: white;
+  background-color: #DC0A2D;
+  border: none;
 }
 
 .footer {
@@ -47,7 +52,7 @@ p {
 }
 
 #root {
-  padding-bottom: 3rem;
+  padding-bottom: 5rem;
 }
 
 .footer:hover, .footer:focus {
