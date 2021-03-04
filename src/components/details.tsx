@@ -4,13 +4,14 @@ import useModalDialog from "../hooks/useModalDialog";
 
 import type { Pokemon } from "../PokedexInfo";
 import useSpeechSynthesis from "../hooks/useSpeechSynthesis";
-import { useEffect } from "react";
 
 function subjunction(items: string[], suffix = "", prefix = "") {
   switch (items.length) {
     case 0:
       return "";
     case 1:
+      return `${prefix} ${items[0]} ${suffix}`;
+    case 2:
       return `${prefix} ${items[0]} and ${items[1]} ${suffix}`;
     default:
       return `${prefix} ${items.slice(0, -1).join(", ")} and ${
@@ -24,20 +25,16 @@ export default function PokemonDetails({
 }: {
   pokemon: Pokemon;
 }) {
-  const [ref, close, open, isOpened] = useModalDialog();
-
   const [speak, cancel] = useSpeechSynthesis();
 
-  useEffect(() => {
-    if (!isOpened) cancel();
-  }, [cancel, isOpened]);
+  const [ref, close, open] = useModalDialog(cancel);
 
   return (
     <>
       <div className="pokedex-details">
         <button
           type="button"
-          className="nes-button"
+          className="nes-btn is-primary is-small"
           onClick={() => {
             open();
             speak(

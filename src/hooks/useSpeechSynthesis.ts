@@ -2,72 +2,81 @@ import { useCallback, useEffect, useState } from "react";
 
 // Inspired by https://mdn.github.io/web-speech-api/speak-easy-synthesis/
 
-export default function useSpeechSynthesis(
-  pitch: number = 1,
-  rate: number = 1.5
-) {
-  const synth = window.speechSynthesis;
+const synth = window.speechSynthesis;
 
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-
-  const [names, setNames] = useState<string[]>([]);
-
-  const [selected, setSelectedVoice] = useState(-1);
-
-  useEffect(() => {
-    if (!synth) return;
-
-    const voices = synth
+const voices = synth
+  ? synth
       .getVoices()
-      .filter(voice => voice.lang === "en")
+      .filter(voice => voice.lang === "en-US")
       .sort(function (a, b) {
-        const aname = a.name.toUpperCase(),
-          bname = b.name.toUpperCase();
-        if (aname < bname) return -1;
-        else if (aname === bname) return 0;
+        const an = a.name.toUpperCase(),
+          bn = b.name.toUpperCase();
+        if (an < bn) return -1;
+        else if (an === bn) return 0;
         else return +1;
-      });
+      })
+  : [];
 
-    setVoices(voices);
+function attemptToGetPreferredVoice() {
+  const index = voices.findIndex(voice => voice.name.indexOf("Mark") >= 0);
+  return index < 0 ? 0 : index;
+}
 
-    setNames(voices.map(voice => voice.name));
+const names = voices.map(voice => voice.name);
 
-    console.log(voices);
+let selected = voices.length > 0 ? attemptToGetPreferredVoice() : -1;
 
-    if (voices.length > 0) setSelectedVoice(0);
-  }, [synth]);
+console.log(...names, "\nSelected", names[selected]);
 
-  const cancel = useCallback(
-    function cancel() {
-      synth.cancel();
+export function useSpeechSynthesisVoiceOptions() {
+  const [toggle, refresh] = useState(false);
+
+  const select = useCallback(
+    function selectSpeechSynthesisVoice(name: string) {
+      const previous = selected;
+      selected = voices.findIndex(voice => voice.name === name);
+      if (selected !== previous) refresh(!toggle);
     },
-    [synth]
+    [toggle]
   );
 
+  return [names, names[selected] || "", select] as const;
+}
+
+export default function useSpeechSynthesis(
+  enabled = true,
+  pitch: number = 1,
+  rate: number = 1
+) {
+  useEffect(() => {
+    if (!enabled) synth?.cancel();
+  }, [enabled]);
+
+  const cancel = useCallback(function cancelTextUtterance() {
+    if (!synth) return;
+    synth?.cancel();
+  }, []);
+
   const speak = useCallback(
-    function speak(text: string) {
+    function speakTextUtterance(text: string) {
       if (!synth) return;
 
-      synth.cancel();
+      synth?.cancel();
+
+      if (!enabled) return;
 
       const utterance = new SpeechSynthesisUtterance(text);
 
-      if (selected < 0) utterance.voice = voices[selected];
+      if (selected >= 0) utterance.voice = voices[selected];
 
       utterance.pitch = pitch;
+      utterance.lang = "en-US";
       utterance.rate = rate;
 
       synth.speak(utterance);
     },
-    [pitch, rate, selected, synth, voices]
+    [enabled, pitch, rate]
   );
 
-  const select = useCallback(
-    function select(name: string) {
-      setSelectedVoice(voices.findIndex(voice => voice.name === name));
-    },
-    [voices]
-  );
-
-  return [speak, cancel, select, names] as const;
+  return [speak, cancel] as const;
 }

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export default function useModalDialog() {
+function noop() {}
+
+export default function useModalDialog(onCloseHandler = noop) {
   const [isOpen, setIsOpen] = useState(false);
   const [overflow, setOriginalOverflow] = useState("");
 
@@ -28,9 +30,14 @@ export default function useModalDialog() {
     }
   }, []);
 
-  const onCloseDialog = useCallback(function onCloseDialog() {
-    ref.current?.close();
-  }, []);
+  const onCloseDialog = useCallback(
+    function onCloseDialog() {
+      ref.current?.close();
+      onCloseHandler();
+      close();
+    },
+    [close, onCloseHandler]
+  );
 
   const onDialogBackdropClicked = useCallback(
     function onDialogBackdropClicked(event: Event) {
