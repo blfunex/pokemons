@@ -1,4 +1,4 @@
-import PokemonImage from "./image";
+import PokemonImage from "./PokemonImage";
 
 import useModalDialog from "../hooks/useModalDialog";
 

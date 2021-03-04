@@ -1,5 +1,5 @@
-import PokemonDetails from "./components/details";
-import PokemonImage from "./components/image";
+import PokemonDetails from "./components/PokemonDetails";
+import PokemonImage from "./components/PokemonImage";
 
 export type Pokemon = {
   id: string;

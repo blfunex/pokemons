@@ -30,7 +30,7 @@ header, footer {
   text-align: center;
 }
 
-header {
+body > header {
   color: white;
 }
 
