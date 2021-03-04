@@ -11,14 +11,15 @@ interface PokemonResponse {
   sprites: {
     back_default: null | string;
     front_default: null | string;
-  }[];
+    // ...
+  };
   types: PokemonResponse.PokemonType[];
 }
 
 declare namespace PokemonResponse {
   export interface PokemonType {
     slot: number;
-    type: ResponseReference[];
+    type: ResponseReference;
   }
 }
 
