@@ -7,12 +7,12 @@ export default function useResponseTransform<T, U>(
 ) {
   const [result, setResult] = useState<U>(null!);
 
-  const [loading, error, response] = state;
+  const [, , response] = state;
 
   useEffect(() => {
-    if (!(loading || error)) setResult(transform(response));
+    if (response) setResult(transform(response));
     else setResult(null!);
-  }, [loading, error, response, transform]);
+  }, [response, transform]);
 
   return result;
 }

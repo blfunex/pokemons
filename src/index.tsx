@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 
 import "./index.css";
 
-import App from "./App";
+import App from "./Pokedex";
 
 ReactDOM.render(
   <React.StrictMode>

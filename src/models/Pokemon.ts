@@ -9,6 +9,17 @@ export default interface Pokemon {
 }
 
 function getPokemonName(name: string) {
+  name = name[0].toUpperCase() + name.slice(1);
+  const match = name.match(/(.*)-([a-z]+)$/i);
+  if (match) {
+    name = match[1];
+    switch (match[2]) {
+      case "f":
+        return `Female ${name}`;
+      case "m":
+        return `Male ${name}`;
+    }
+  }
   return name;
 }
 

@@ -20,17 +20,19 @@ export default function useQuery<T>(query: string): QueryResult<T> {
 
     setLoading(true);
 
-    axios.get(query, { cancelToken: token }).then(
-      response => {
-        setResult(response.data);
-        setLoading(false);
-      },
-      error => {
-        if (axios.isCancel(error)) return;
-        setError(error);
-        setLoading(false);
-      }
-    );
+    axios
+      .get<T>(query, { cancelToken: token })
+      .then(
+        response => {
+          setResult(response.data);
+          setLoading(false);
+        },
+        error => {
+          if (axios.isCancel(error)) return;
+          setError(error);
+          setLoading(false);
+        }
+      );
 
     return () => canceler();
   }, [query]);
