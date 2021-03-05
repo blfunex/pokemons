@@ -8,12 +8,24 @@ export type QueryResult<T> = readonly [
   result: T
 ];
 
-export default function useQuery<T>(query: string): QueryResult<T> {
+export default function useQuery<T>(
+  cache: Record<string, T>,
+  query: string
+): QueryResult<T> {
   const [result, setResult] = useState<T>(null!);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const cached = cache[query];
+
+    if (cached) {
+      setResult(cached);
+      setError("");
+      setLoading(false);
+      return;
+    }
+
     let canceler: Canceler;
 
     const token = new axios.CancelToken(c => (canceler = c));
@@ -24,7 +36,9 @@ export default function useQuery<T>(query: string): QueryResult<T> {
       .get<T>(query, { cancelToken: token })
       .then(
         response => {
-          setResult(response.data);
+          const result = response.data;
+          cache[query] = result;
+          setResult(result);
           setLoading(false);
         },
         error => {
@@ -35,7 +49,7 @@ export default function useQuery<T>(query: string): QueryResult<T> {
       );
 
     return () => canceler();
-  }, [query]);
+  }, [cache, query]);
 
   return [loading, error, result];
 }

@@ -8,7 +8,7 @@ export default interface Pokemon {
   types: string[];
 }
 
-function getPokemonName(name: string) {
+export function getPokemonName(name: string) {
   name = name[0].toUpperCase() + name.slice(1);
   const match = name.match(/(.*)-([a-z]+)$/i);
   if (match) {
