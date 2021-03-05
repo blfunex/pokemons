@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import axios, { Canceler } from "axios";
 
 export type QueryResult<T> = readonly [
-  loading: boolean,
+  result: T | null,
   error: string,
-  result: T
+  loading: boolean
 ];
 
 export default function useQuery<T>(
   cache: Record<string, T>,
   query: string
 ): QueryResult<T> {
-  const [result, setResult] = useState<T>(null!);
+  const [result, setResult] = useState<T | null>(null);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
@@ -51,5 +51,5 @@ export default function useQuery<T>(
     return () => canceler();
   }, [cache, query]);
 
-  return [loading, error, result];
+  return [result, error, loading];
 }
