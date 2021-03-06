@@ -4,6 +4,7 @@ import { ResponseReference } from "../models/PokeAPI";
 import { getPokemonName } from "../models/Pokemon";
 import { usePokemonQuery } from "../models/utilities";
 import PokemonImage from "./PokemonImage";
+import PokemonTypes from "./PokemonTypes";
 
 type PokemonUnselect = {
   unselect(): void;
@@ -29,9 +30,9 @@ export default function PokemonDetails({
       {selected ? (
         <PokemonDetailsView selected={selected} unselect={unselect} />
       ) : (
-        <main className="pokemon-details closed">
+        <article className="pokemon-details closed">
           Select a pokemon from the right panel.
-        </main>
+        </article>
       )}
     </>
   );
@@ -59,7 +60,10 @@ function PokemonDetailsView({
             {pokemon.name}
             <code>#{pokemon.id}</code>
           </PokemonDetailsHeader>
-          <PokemonImage name={pokemon.name} sprites={pokemon.sprites} />
+          <main>
+            <PokemonImage name={pokemon.name} sprites={pokemon.sprites} />
+            <PokemonTypes types={pokemon.types} />
+          </main>
         </>
       ) : loading ? (
         <i className="gg-spinner" />
