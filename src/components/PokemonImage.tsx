@@ -15,9 +15,6 @@ export default function PokemonImage({
     setLoaded(true);
   }, []);
 
-  const front = sprites[0] || UnknownPokemonPNG;
-  const back = sprites[1] || UnknownPokemonPNG;
-
   useEffect(() => {
     setFlipped(false);
     setLoaded(false);
@@ -28,13 +25,20 @@ export default function PokemonImage({
     setLoaded(false);
   }, [flipped]);
 
+  const front = sprites[0] || UnknownPokemonPNG;
+  const back = sprites[1] || UnknownPokemonPNG;
+
+  const sprite = flipped ? back : front;
+
+  const isNotFound = sprite === UnknownPokemonPNG;
+
   return (
     <figure
       onClick={toggleFlipped}
       className="pokemon-image"
       title="Click to flip"
     >
-      {loaded ? null : (
+      {loaded || (
         <div className="loading">
           <i className="gg-spinner" />
         </div>
@@ -42,11 +46,13 @@ export default function PokemonImage({
       <img
         hidden={!loaded}
         onLoad={onLoad}
-        src={flipped ? back : front}
+        src={sprite}
         alt={`${flipped ? "Back" : "Front"} view of ${name}.`}
       />
       <figcaption>
-        {flipped ? "Back" : "Front"} view of {name}.
+        {isNotFound
+          ? `No ${name} ${flipped ? "back" : "front"} view was found.`
+          : `${flipped ? "Back" : "Front"} view of ${name}.`}
       </figcaption>
     </figure>
   );
