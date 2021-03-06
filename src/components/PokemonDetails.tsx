@@ -69,9 +69,16 @@ function PokemonDetailsView({
             <code>#{pokemon.id}</code>
           </PokemonDetailsHeader>
           <main>
-            <PokemonImage name={pokemon.name} sprites={pokemon.sprites} />
-            <PokemonTypes types={pokemon.types} />
-            <PokemonFlavorText pokemon={pokemon} />
+            <aside>
+              <PokemonImage
+                name={pokemon.name}
+                sprites={pokemon.sprites}
+              />
+            </aside>
+            <section>
+              <PokemonTypes types={pokemon.types} />
+              <PokemonFlavorText pokemon={pokemon} />
+            </section>
           </main>
         </>
       ) : loading ? (
