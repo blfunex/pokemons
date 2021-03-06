@@ -1,9 +1,9 @@
-import axios, { Canceler } from "axios";
+import axios from "axios";
 
 import { useEffect, useState } from "react";
 import { useInfiniteQuery } from "react-query";
 
-import useQ from "../hooks/useCachedQuery";
+import useCachedQuery from "../hooks/useCachedQuery";
 
 import {
   PokemonResponse,
@@ -36,9 +36,14 @@ const species = {};
 export function usePokemonSpeciesQuery(url: string) {
   const [result, setResult] = useState<PokemonSpecies | null>(null);
 
-  const [response, error, loading] = useQ<PokemonSpeciesResponse>(
+  const [
+    response,
+    error,
+    loading,
+  ] = useCachedQuery<PokemonSpeciesResponse>(
     species,
-    url
+    // https://github.com/PokeAPI/pokeapi/issues/574
+    url.slice(0, -1)
   );
 
   useEffect(() => {
@@ -55,7 +60,11 @@ const pokemons = {};
 export function usePokemonQuery(url: string) {
   const [result, setResult] = useState<Pokemon | null>(null);
 
-  const [response, error, loading] = useQ<PokemonResponse>(pokemons, url);
+  const [response, error, loading] = useCachedQuery<PokemonResponse>(
+    pokemons,
+    // https://github.com/PokeAPI/pokeapi/issues/574
+    url.slice(0, -1)
+  );
 
   useEffect(() => {
     if (response) {
@@ -69,7 +78,7 @@ export function usePokemonQuery(url: string) {
 const backend = "https://pokeapi.co/api/v2/pokemon/";
 const stride = 50;
 
-function getPokemons(page: number) {
+function getPokemonsURL(page: number) {
   return `${backend}?limit=${stride}&offset=${stride * page}`;
 }
 
@@ -87,7 +96,7 @@ export function useInfinitePokemonQuery() {
   } = useInfiniteQuery(
     "pokemons",
     async ({ pageParam = 0 }) => {
-      const url = getPokemons(pageParam);
+      const url = getPokemonsURL(pageParam);
 
       // const token = new axios.CancelToken(setCanceler);
 

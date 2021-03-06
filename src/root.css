@@ -93,7 +93,7 @@ div.unknown-pokemon-image {
 .pokemon-navigation li {
   min-height: var(--pokemon-image-unknown-size);
   transition: background 300ms ease-in-out;
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1rem;
   align-items: center;
   position: absolute;
   user-select: none;
@@ -114,7 +114,7 @@ div.unknown-pokemon-image {
 }
 
 .pokemon-navigation li:focus {
-  outline: 3px double #e2a2a2;
+  outline: 3px solid #e2a2a2;
   outline-offset: -6px;
 }
 
@@ -220,10 +220,6 @@ div.unknown-pokemon-image {
   align-items: center;
 }
 
-.pokemon-image figcaption {
-  max-width: 256px;
-}
-
 .pokemon-type {
   display: inline-block;
   background-color: black;
@@ -251,8 +247,9 @@ div.unknown-pokemon-image {
 }
 
 @media (min-width: 420px) {
+
   .pokemon-navigation li {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -266,7 +263,7 @@ div.unknown-pokemon-image {
   }
 
   .pokemon-image img {
-    max-width: 256px;
+    max-width: 288px;
   }
 
   .pokemon-image {

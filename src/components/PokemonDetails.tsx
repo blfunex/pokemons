@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import useSpeechSynthesis from "../hooks/useSpeechSynthesis";
 
 import PokemonImage from "./PokemonImage";
@@ -103,15 +103,22 @@ function PokemonDetailsHeader({
 }
 
 function PokemonFlavorText({ pokemon }: { pokemon: Pokemon }) {
-  const [species, error, loading] = usePokemonSpeciesQuery(
-    pokemon.species.url
-  );
+  const [text, setText] = useState("");
+
+  const [species, , loading] = usePokemonSpeciesQuery(pokemon.species.url);
 
   const [speak, cancel] = useSpeechSynthesis();
 
+  useEffect(() => cancel(), [cancel, pokemon]);
+
+  useEffect(() => {
+    if (text && !loading) speak(text);
+    return cancel;
+  }, [cancel, speak, loading, text]);
+
   useEffect(() => {
     if (species) {
-      speak(
+      setText(
         humanizeFlavorText(
           pokemon.id,
           pokemon.name,
@@ -120,30 +127,19 @@ function PokemonFlavorText({ pokemon }: { pokemon: Pokemon }) {
           species.flavorText
         )
       );
-      return cancel;
     }
-  }, [cancel, speak, pokemon, species]);
-
-  useEffect(() => {
-    return cancel;
-  }, [cancel]);
+  }, [pokemon.id, pokemon.name, pokemon.types, species]);
 
   return (
     <>
-      {error && (
-        <div className="pokemon-flavor-text" style={{ color: "crimson" }}>
-          Failed to load text for this pokemon
-        </div>
-      )}
-      {loading && (
+      {loading ? (
         <div
           className="pokemon-flavor-text"
           style={{ textAlign: "center" }}
         >
           <i className="gg-spinner" />
         </div>
-      )}
-      {species ? (
+      ) : species ? (
         <>
           <div className="pokemon-generation">
             Generation{" "}
@@ -151,7 +147,11 @@ function PokemonFlavorText({ pokemon }: { pokemon: Pokemon }) {
           </div>
           <div className="pokemon-flavor-text">{species.flavorText}</div>
         </>
-      ) : null}
+      ) : (
+        <div className="pokemon-flavor-text" style={{ color: "crimson" }}>
+          Failed to load text for this pokemon.
+        </div>
+      )}
     </>
   );
 }
@@ -167,7 +167,11 @@ export const GenerationHumanizedText: Record<string, string> = {
   "generation-viii": "eighth generation",
 };
 
-function humanizeList(prefix: string, types: string[], suffix: string) {
+export function humanizeList(
+  prefix: string,
+  types: string[],
+  suffix: string
+) {
   let text = "";
   switch (types.length) {
     case 0:
@@ -186,7 +190,7 @@ function humanizeList(prefix: string, types: string[], suffix: string) {
   return `${prefix} ${text} ${suffix}`;
 }
 
-function humanizeFlavorText(
+export function humanizeFlavorText(
   id: string,
   name: string,
   types: string[],
@@ -197,5 +201,5 @@ function humanizeFlavorText(
     `is a ${GenerationHumanizedText[generation]}`,
     types,
     "pokemon"
-  )}.\n${text}`;
+  )}.\n${text}`.toLowerCase();
 }

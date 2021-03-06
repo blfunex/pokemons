@@ -135,6 +135,16 @@ export default function PokemonNavigation({
               ref={row.measureRef}
               style={{ transform: `translateY(${row.start}px)` }}
               onClick={isOverflow ? noop : () => setSelected(pokemon)}
+              onKeyDown={
+                isOverflow
+                  ? noop
+                  : e => {
+                      if (e.key === "Return" || e.key === " ") {
+                        e.preventDefault();
+                        setSelected(pokemon);
+                      }
+                    }
+              }
             >
               {isLoadingRow ? (
                 <div className="unknown-pokemon-image">

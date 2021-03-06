@@ -34,19 +34,17 @@ export default function useCachedQuery<T>(
 
     axios
       .get<T>(query, { cancelToken: token })
-      .then(
-        response => {
-          const result = response.data;
-          cache[query] = result;
-          setResult(result);
-          setLoading(false);
-        },
-        error => {
-          if (axios.isCancel(error)) return;
-          setError(error);
-          setLoading(false);
-        }
-      );
+      .then(response => {
+        const result = response.data;
+        cache[query] = result;
+        setResult(result);
+        setLoading(false);
+      })
+      .catch(error => {
+        if (axios.isCancel(error)) return;
+        setError(error);
+        setLoading(false);
+      });
 
     return () => canceler();
   }, [cache, query]);
