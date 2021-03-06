@@ -28,7 +28,7 @@ const names = voices.map(voice => voice.name);
 
 let selected = voices.length > 0 ? attemptToGetPreferredVoice() : -1;
 
-console.log(...names, "\nSelected", names[selected]);
+// console.log(...names, "\nSelected", names[selected]);
 
 export function useSpeechSynthesisVoiceOptions() {
   const [toggle, refresh] = useState(false);

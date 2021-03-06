@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { Canceler } from "axios";
 
 import { useEffect, useState } from "react";
 import { useInfiniteQuery } from "react-query";
@@ -7,11 +7,16 @@ import useQ from "../hooks/useCachedQuery";
 
 import {
   PokemonResponse,
+  PokemonSpeciesResponse,
   PokemonsResponse,
   ResponseReference,
 } from "./PokeAPI";
 
-import Pokemon, { getPokemon } from "./Pokemon";
+import Pokemon, {
+  getPokemon,
+  getPokemonSpecies,
+  PokemonSpecies,
+} from "./Pokemon";
 
 import UnknownPokemonPNG from "./unknown-pokemon.png";
 
@@ -26,23 +31,31 @@ export function getGenerationRomanNumeral(generationId: string) {
   return generationId.slice(11).toUpperCase();
 }
 
-export const GenerationHumanizedText: Record<string, string> = {
-  "generation-i": "first generation",
-  "generation-ii": "second generation",
-  "generation-iii": "third generation",
-  "generation-iv": "fourth generation",
-  "generation-v": "fifth generation",
-  "generation-vi": "sixth generation",
-  "generation-vii": "seventh generation",
-  "generation-viii": "eighth generation",
-};
+const species = {};
 
-const cache = {};
+export function usePokemonSpeciesQuery(url: string) {
+  const [result, setResult] = useState<PokemonSpecies | null>(null);
+
+  const [response, error, loading] = useQ<PokemonSpeciesResponse>(
+    species,
+    url
+  );
+
+  useEffect(() => {
+    if (response) {
+      setResult(getPokemonSpecies(response));
+    }
+  }, [response]);
+
+  return [result, error, loading] as const;
+}
+
+const pokemons = {};
 
 export function usePokemonQuery(url: string) {
   const [result, setResult] = useState<Pokemon | null>(null);
 
-  const [response, error, loading] = useQ<PokemonResponse>(cache, url);
+  const [response, error, loading] = useQ<PokemonResponse>(pokemons, url);
 
   useEffect(() => {
     if (response) {
@@ -62,6 +75,7 @@ function getPokemons(page: number) {
 
 export function useInfinitePokemonQuery() {
   const [pokemons, setPokemons] = useState<ResponseReference[]>([]);
+  // const [canceler, setCanceler] = useState<Canceler>(noop);
 
   const {
     isFetchingNextPage,
@@ -75,7 +89,11 @@ export function useInfinitePokemonQuery() {
     async ({ pageParam = 0 }) => {
       const url = getPokemons(pageParam);
 
-      const result = await axios.get<PokemonsResponse>(url);
+      // const token = new axios.CancelToken(setCanceler);
+
+      const result = await axios.get<PokemonsResponse>(url, {
+        // cancelToken: token,
+      });
 
       return result.data.results;
     },
@@ -92,6 +110,7 @@ export function useInfinitePokemonQuery() {
   }, [data]);
 
   return [
+    // canceler,
     pokemons,
     !hasNextPage,
     fetchNextPage,

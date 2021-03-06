@@ -1,4 +1,8 @@
-import { PokemonResponse } from "./PokeAPI";
+import {
+  PokemonResponse,
+  PokemonSpeciesResponse,
+  ResponseReference,
+} from "./PokeAPI";
 
 export default interface Pokemon {
   id: string;
@@ -6,6 +10,7 @@ export default interface Pokemon {
   name: string;
   sprites: [front: string | null, back: string | null];
   types: string[];
+  species: ResponseReference;
 }
 
 function capitalize(original: string): string {
@@ -114,6 +119,7 @@ export function getPokemon(response: PokemonResponse): Pokemon {
     id: response.id,
     nameId: name,
     name: getPokemonName(name),
+    species: response.species,
     sprites: [
       response.sprites.front_default,
       response.sprites.back_default,
@@ -121,5 +127,25 @@ export function getPokemon(response: PokemonResponse): Pokemon {
     types: response.types
       .sort((a, b) => Math.sign(b.slot - a.slot))
       .map(type => type.type.name),
+  };
+}
+
+export interface PokemonSpecies {
+  generationId: string;
+  flavorText: string;
+}
+
+export function getPokemonSpecies(
+  response: PokemonSpeciesResponse
+): PokemonSpecies {
+  return {
+    generationId: response.generation.name,
+    flavorText: (
+      response.flavor_text_entries.find(
+        entry => entry.language.name === "en"
+      )?.flavor_text ?? ""
+    )
+      .replace(/\n|\f/g, " ")
+      .trim(),
   };
 }

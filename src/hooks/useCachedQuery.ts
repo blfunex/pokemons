@@ -8,7 +8,7 @@ export type QueryResult<T> = readonly [
   loading: boolean
 ];
 
-export default function useQuery<T>(
+export default function useCachedQuery<T>(
   cache: Record<string, T>,
   query: string
 ): QueryResult<T> {

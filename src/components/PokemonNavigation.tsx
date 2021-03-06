@@ -80,14 +80,20 @@ export default function PokemonNavigation({
   selected,
   setSelected,
 }: PokemonNavigationProps) {
-  const [data, done, fetch, loading] = useInfinitePokemonQuery();
+  const [
+    // _,
+    data,
+    done,
+    fetch,
+    loading,
+  ] = useInfinitePokemonQuery();
 
   const parentRef = useRef<HTMLDivElement>(null!);
 
   const { virtualItems, totalSize } = useVirtual({
     parentRef: parentRef,
     size: done ? data.length : data.length + 1,
-    estimateSize: useCallback(() => 100, []),
+    estimateSize: useCallback(() => 40, []),
   });
 
   useEffect(() => {

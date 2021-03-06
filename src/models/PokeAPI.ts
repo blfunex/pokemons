@@ -7,7 +7,7 @@ interface PokemonResponse {
   // ...
   id: string;
   name: string;
-  species: ResponseReference[];
+  species: ResponseReference;
   sprites: {
     back_default: null | string;
     front_default: null | string;
@@ -27,6 +27,7 @@ export type { PokemonResponse };
 
 export interface PokemonSpeciesResponse {
   // ...
+  generation: ResponseReference;
   flavor_text_entries: {
     flavor_text: string;
     language: ResponseReference;

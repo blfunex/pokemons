@@ -24,6 +24,10 @@ a[href]:hover {
   color: #4DF;
 }
 
+code {
+  font: inherit;
+}
+
 #root {
   display: grid;
   height: 100vh;
@@ -223,9 +227,9 @@ div.unknown-pokemon-image {
 .pokemon-type {
   display: inline-block;
   background-color: black;
-  color: white;
   font-size: 0.8rem;
   padding: 0.25rem;
+  color: white;
 }
 
 .pokemon-type:not(:last-child) {
@@ -233,7 +237,17 @@ div.unknown-pokemon-image {
 }
 
 .pokemon-types {
-  padding: 1rem 0;
+  margin-bottom: 1rem;
+}
+
+.pokemon-generation {
+  margin-bottom: 1rem;
+}
+
+.pokemon-generation code {
+  background-color: #656565;
+  color: white;
+  padding: 0.5rem 1rem;
 }
 
 @media (min-width: 420px) {
